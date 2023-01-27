@@ -5,7 +5,10 @@ namespace ElectricCarService.Data;
 
 public class ElectricCarServiceContext: DbContext
 {
-    public DbSet<ChargingStationEntity> ChargingStations { get; set; }
+    public DbSet<ChargingStationEntity> ChargingStations { get; set; } = null!;
+
+    public ElectricCarServiceContext(DbContextOptions<ElectricCarServiceContext> options): base(options) { }
+    
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<ChargingStationEntity>().HasIndex(_ => _.Identifier).IsUnique();
@@ -22,8 +25,8 @@ public class ElectricCarServiceContext: DbContext
 public class ChargingStationEntity
 {
     public int Id { get; set; }
-    public string Identifier { get; set; }
-    public string Address { get; set; }
+    public string Identifier { get; set; } = null!;
+    public string Address { get; set; } = null!;
     public int Number { get; set; }
     public ChargingStationStatus Status { get; set; }
 }

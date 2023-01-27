@@ -12,7 +12,7 @@ namespace ElectricCarService.Migrations
 {
     [DbContext(typeof(ElectricCarServiceContext))]
     [Migration("20230126213132_initial_migration")]
-    partial class initialmigration
+    partial class InitialMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
