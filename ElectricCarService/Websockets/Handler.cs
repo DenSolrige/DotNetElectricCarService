@@ -1,5 +1,6 @@
 ﻿using System.Net.WebSockets;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using ElectricCarService.Data;
 
 namespace ElectricCarService.Websockets;
@@ -10,6 +11,10 @@ public class Handler
     private readonly string _identifier;
     private readonly WebSocket _ws;
     private ChargingStationEntity cs;
+    private static JsonSerializerOptions _serializerOptions = new JsonSerializerOptions(JsonSerializerDefaults.Web)
+    {
+        Converters = { new JsonStringEnumConverter(JsonNamingPolicy.CamelCase) }
+    };
 
     public Handler(string identifier, WebSocket ws, ElectricCarServiceContext context, ChargingStationEntity cs)
     {
@@ -36,7 +41,7 @@ public class Handler
     {
         Console.WriteLine($"{_identifier}: Start transaction!");
         
-        var payload = JsonSerializer.Deserialize<HandleStartPayload>(message);
+        var payload = JsonSerializer.Deserialize<HandleStartPayload>(message,_serializerOptions);
         var price = _context.CompanyPrice.FirstOrDefault(p => p.Id == 1);
         var transaction = new TransactionEntity();
         if (price != null)
@@ -67,7 +72,7 @@ public class Handler
 
     private void HandleCharging(string message)
     {
-        var payload = JsonSerializer.Deserialize<HandleChargingPayload>(message);
+        var payload = JsonSerializer.Deserialize<HandleChargingPayload>(message,_serializerOptions);
         var transaction = _context.Transactions.FirstOrDefault(t => t.Id == payload!.TransactionId);
         Console.WriteLine($"{_identifier}: Charging update - {message}");
         var charge = new ChargeEntity()
@@ -82,7 +87,7 @@ public class Handler
 
     private void HandleStatus(string message)
     {
-        var payload = JsonSerializer.Deserialize<HandleStatusPayload>(message);
+        var payload = JsonSerializer.Deserialize<HandleStatusPayload>(message,_serializerOptions);
         var transaction = _context.Transactions.FirstOrDefault(t => t.Id == payload!.TransactionId);
         Console.WriteLine($"{_identifier}: Status change - {message}");
         if (payload!.Status == TransactionStatus.Suspended)
@@ -101,7 +106,7 @@ public class Handler
 
     private void HandleStop(string message)
     {
-        var payload = JsonSerializer.Deserialize<HandleStopPayload>(message);
+        var payload = JsonSerializer.Deserialize<HandleStopPayload>(message,_serializerOptions);
         var transaction = _context.Transactions.FirstOrDefault(t => t.Id == payload!.TransactionId);
         Console.WriteLine($"{_identifier}: Stop transaction!");
         

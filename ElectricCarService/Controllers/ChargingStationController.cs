@@ -106,7 +106,7 @@ public class ChargingStationController : ControllerBase
             }
         
             _logger.LogInformation($"Connection closed with {identifier}");
-            return Ok();
+            return Empty;
         }
         return StatusCode((int)HttpStatusCode.BadRequest);
     }
