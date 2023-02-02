@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
+using ElectricCarService.Controllers;
 using Microsoft.EntityFrameworkCore;
 
 namespace ElectricCarService.Data;
@@ -89,6 +90,7 @@ public class CompanyPriceEntity
     public double FlatCharge { get; set; }
     public double Rate { get; set; }
 }
+
 
 
 

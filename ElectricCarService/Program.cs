@@ -14,13 +14,19 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<ElectricCarServiceContext>(_=>_.UseNpgsql(builder.Configuration.GetConnectionString("Database")));
 
 var app = builder.Build();
-
+using (var serviceScope = app.Services.GetRequiredService<IServiceScopeFactory>().CreateScope())
+{
+    var dbContext = serviceScope.ServiceProvider.GetRequiredService<ElectricCarServiceContext>();
+    dbContext.Database.Migrate();
+}
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseWebSockets();
 
 app.UseHttpsRedirection();
 
